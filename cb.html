@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Random Video Player</title>
+  <style>
+    /* 样式代码省略 */
+	button{
+		            background-color:#00aaff;
+		            color:white;
+		            width: 400px;
+		            height: 45px;
+		            border:0;
+		            font-size: 16px;
+		            box-sizing: content-box;				
+	                border-radius: 5px;
+	            }
+	            button:hover{
+		            background-color: #a54b4a;
+	            }
+
+  </style>
+</head>
+<body>
+  <div id="video-container">
+    <video id="video-player" controls>
+      您的浏览器不支持视频播放
+    </video>
+  </div>
+  <button id="refresh-button">刷新视频</button>
+
+  <script>
+    const videoPlayer = document.getElementById('video-player');
+    const refreshButton = document.getElementById('refresh-button');
+
+    function getRandomVideo() {
+      fetch('https://api.kuleu.com/api/xjj?type=json')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP 错误 ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.code === 200) {
+            videoPlayer.src = data.video;
+            videoPlayer.play(); // 自动触发视频播放
+          } else {
+            console.error('获取视频失败:', data.msg);
+            alert('抱歉,获取视频时出现错误,请稍后再试。');
+          }
+        })
+        .catch(error => {
+          console.error('获取视频失败:', error);
+          alert('抱歉,获取视频时出现错误,请稍后再试。');
+        });
+    }
+
+    getRandomVideo();
+
+    refreshButton.addEventListener('click', getRandomVideo);
+  </script>
+</body>
+</html>
